@@ -1,34 +1,40 @@
 import pandas as pd
-import numpy
+import numpy as np
+from pymatgen.core import Element
 
 # READ CSV
-def read_file(name_file):
-    file = pd.read_csv(name_file)
-    materials = file.iloc[:, :-2].to_numpy()
-    # print(vetores)
+def read_file(path_file):
+    file = pd.read_csv(path_file)
+    materials = file.iloc[:, :-2]
     return materials
 
 # CREATE DATA CSV
-def write_data(name_file):
+def write_file(path_file):
     pass
 
 # NUMBER OF ELEMENTS
 def create_descritor_one(materials):
 
-    number_of_elements = [0] * len(materials)
-
-    for i, elements_values in enumerate(materials):
-        for element in elements_values:
-            if element != 0:
-                number_of_elements[i] += 1
+    number_of_elements = np.count_nonzero(materials, axis=1)
 
     return number_of_elements
 
 # MEAN ATOMIC MASS
 def create_descritor_two(materials):
 
-    mean_atomic_mass = 1
-    
+    elements = materials.columns
+    atomic_masses = np.array([
+        float(Element(element).atomic_mass)
+        for element in elements
+    ])
+
+    number_of_elements = materials.to_numpy()
+
+    total_mass = number_of_elements @ atomic_masses
+    total_atoms = number_of_elements.sum(axis=1)
+
+    mean_atomic_mass = total_mass / total_atoms
+
     return mean_atomic_mass
 
 # RANGE ATOMIC MASS
@@ -75,14 +81,15 @@ def create_descritor_eight(materials):
 
 def main():
     
-    vetores = read_file('test.csv')
-    # vetores = read_file('unique_m.csv')
+    materials = read_file('data/input/test.csv')
 
-    descritor_1 = create_descritor_one(vetores)
-    # descritor_2 = create_descritor_two(vetores)
+    descritor_1 = create_descritor_one(materials)
+    descritor_2 = create_descritor_two(materials)
 
     print(descritor_1)
-    # print(descritor_2)
+    print(descritor_2)
+
+    # write_file('data/output/saida.txt')
 
 if __name__ == '__main__':
     main()

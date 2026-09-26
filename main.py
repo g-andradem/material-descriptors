@@ -81,7 +81,7 @@ def create_descritor_eight(materials):
 
 def main():
     
-    materials = read_file('data/input/test.csv')
+    materials = read_file('data/input/unique_m.csv')
 
     descritor_1 = create_descritor_one(materials)
     descritor_2 = create_descritor_two(materials)
